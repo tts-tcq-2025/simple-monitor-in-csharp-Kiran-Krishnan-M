@@ -10,17 +10,16 @@ namespace paradigm_shift_csharp
 
         static bool batteryIsOk(float temperature, float soc, float chargeRate)
         {
-               if (!IsTemperatureOk(temperature) || !IsSocOk(soc))
-                {
-                    Console.WriteLine(!IsTemperatureOk(temperature)
-                    ? "Temperature is out of range!"
-                    : "State of Charge is out of range!");
-                    return false;
-                }
+            bool isTempOk = IsTemperatureOk(temperature);
+            bool isSocOk = IsSocOk(soc);
+            bool isChargeOk = IsChargeRateOk(chargeRate);
 
-            if (!IsChargeRateOk(chargeRate))
+            if (!(isTempOk && isSocOk && isChargeOk))
             {
-                Console.WriteLine("Charge Rate is out of range!");
+                Console.WriteLine(
+                    !isTempOk ? "Temperature is out of range!" :
+                    !isSocOk ? "State of Charge is out of range!" :
+                    "Charge Rate is out of range!");
                 return false;
             }
             return true;
