@@ -28,7 +28,6 @@ namespace paradigm_shift_csharp
             return true;
         }
 
-    }
 
     static void ExpectTrue(bool expression) {
         if(!expression) {
