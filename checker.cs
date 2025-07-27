@@ -22,7 +22,7 @@ namespace paradigm_shift_csharp
                     "Charge Rate is out of range!");
                 return false;
             }
-            return true;
+           return true;
         }
 
 
