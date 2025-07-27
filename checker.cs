@@ -23,6 +23,7 @@ class Checker
         Console.WriteLine("Charge Rate is out of range!");
         return false;
          }
+      }
         return true;
     }
 
