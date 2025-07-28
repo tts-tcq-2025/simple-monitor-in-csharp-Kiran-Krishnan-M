@@ -4,25 +4,48 @@ namespace paradigm_shift_csharp
 {
     class Checker
     {
-        static bool IsTemperatureOk(float t) => t >= 0 && t <= 45;
-        static bool IsSocOk(float soc) => soc >= 20 && soc <= 80;
-        static bool IsChargeRateOk(float cr) => cr <= 0.8;
+        // A struct to represent each validation rule
+        private struct Validator
+        {
+            public Func<bool> Condition { get; }
+            public string ErrorMessage { get; }
+
+            public Validator(Func<bool> condition, string message)
+            {
+                Condition = condition;
+                ErrorMessage = message;
+            }
+        }
 
         static bool batteryIsOk(float temperature, float soc, float chargeRate)
         {
-            bool isTempOk = IsTemperatureOk(temperature);
-            bool isSocOk = IsSocOk(soc);
-            bool isChargeOk = IsChargeRateOk(chargeRate);
-
-            if (!(isTempOk && isSocOk && isChargeOk))
+            // List of validation rules
+            var validators = new List<Validator>
             {
-                Console.WriteLine(
-                    !isTempOk ? "Temperature is out of range!" :
-                    !isSocOk ? "State of Charge is out of range!" :
-                    "Charge Rate is out of range!");
-                return false;
+                new Validator(
+                    () => temperature >= 0f && temperature <= 45f,
+                    "Temperature is out of range!"),
+                new Validator(
+                    () => soc >= 20f && soc <= 80f,
+                    "State of Charge is out of range!"),
+                new Validator(
+                    () => chargeRate <= 0.8f,
+                    "Charge rate is out of range!")
+            };
+
+            // Check all validators and collect errors
+            bool allOk = true;
+
+            foreach (var v in validators)
+            {
+                if (!v.Condition())
+                {
+                    Console.WriteLine(v.ErrorMessage);
+                    allOk = false;
+                }
             }
-           return true;
+
+            return allOk;
         }
 
 
