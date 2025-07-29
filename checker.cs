@@ -2,21 +2,55 @@ using System;
 using System.Diagnostics;
 namespace paradigm_shift_csharp
 {
-class Checker
-{
-    static bool batteryIsOk(float temperature, float soc, float chargeRate) {
-        if(temperature < 0 || temperature > 45) {
-            Console.WriteLine("Temperature is out of range!");
-            return false;
-        } else if(soc < 20 || soc > 80) {
-            Console.WriteLine("State of Charge is out of range!");
-            return false;
-        } else if(chargeRate > 0.8) {
-            Console.WriteLine("Charge Rate is out of range!");
-            return false;
+    class Checker
+    {
+        // A struct to represent each validation rule
+        private struct Validator
+        {
+            public Func<bool> Condition { get; }
+            public string ErrorMessage { get; }
+
+            public Validator(Func<bool> condition, string message)
+            {
+                Condition = condition;
+                ErrorMessage = message;
+            }
         }
-        return true;
-    }
+                
+        static void CheckAndReport(Validator v, ref bool allOk)
+        {
+            if (!v.Condition())
+            {
+                Console.WriteLine(v.ErrorMessage);
+                allOk = false;
+            }
+        }
+
+        static bool batteryIsOk(float temperature, float soc, float chargeRate)
+        {
+            // List of validation rules
+            var validators = new List<Validator>
+            {
+                new Validator(
+                    () => temperature >= 0f && temperature <= 45f,
+                    "Temperature is out of range!"),
+                new Validator(
+                    () => soc >= 20f && soc <= 80f,
+                    "State of Charge is out of range!"),
+                new Validator(
+                    () => chargeRate <= 0.8f,
+                    "Charge rate is out of range!")
+            };
+
+            bool allOk = true;
+            foreach (var v in validators)
+            {
+                CheckAndReport(v, ref allOk);
+            }
+
+            return allOk;
+        }
+
 
     static void ExpectTrue(bool expression) {
         if(!expression) {
