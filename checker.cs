@@ -16,6 +16,15 @@ namespace paradigm_shift_csharp
                 ErrorMessage = message;
             }
         }
+                
+        static void CheckAndReport(Validator v, ref bool allOk)
+        {
+            if (!v.Condition())
+            {
+                Console.WriteLine(v.ErrorMessage);
+                allOk = false;
+            }
+        }
 
         static bool batteryIsOk(float temperature, float soc, float chargeRate)
         {
@@ -33,16 +42,10 @@ namespace paradigm_shift_csharp
                     "Charge rate is out of range!")
             };
 
-            // Check all validators and collect errors
             bool allOk = true;
-
             foreach (var v in validators)
             {
-                if (!v.Condition())
-                {
-                    Console.WriteLine(v.ErrorMessage);
-                    allOk = false;
-                }
+                CheckAndReport(v, ref allOk);
             }
 
             return allOk;
